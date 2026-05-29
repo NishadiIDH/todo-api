@@ -26,7 +26,7 @@ pipeline {
                 sh '''
                     export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin
                     sonar-scanner \
-                        -Dsonar.projectKey=todo-api \
+                        -Dsonar.projectKey=NishadiIDH_todo-api \
                         -Dsonar.organization=nishadiidh \
                         -Dsonar.sources=. \
                         -Dsonar.exclusions=node_modules/**,tests/** \
