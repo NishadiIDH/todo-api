@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        SONAR_TOKEN = credentials('sonarcloud-token')
+    }
+
     stages {
         stage('Build') {
             steps {
@@ -18,8 +22,17 @@ pipeline {
 
         stage('Code Quality') {
             steps {
-                echo 'Running SonarQube analysis...'
-                sh 'echo "SonarQube will be configured here"'
+                echo 'Running SonarCloud analysis...'
+                sh '''
+                    export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin
+                    sonar-scanner \
+                        -Dsonar.projectKey=todo-api \
+                        -Dsonar.organization=nishadiidh \
+                        -Dsonar.sources=. \
+                        -Dsonar.exclusions=node_modules/**,tests/** \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.token=$SONAR_TOKEN
+                '''
             }
         }
 
