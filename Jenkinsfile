@@ -33,24 +33,33 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying to test environment...'
-                sh 'docker build -t todo-api .'
-                sh 'docker stop todo-api-container || true'
-                sh 'docker rm todo-api-container || true'
-                sh 'docker run -d -p 4000:5000 --name todo-api-container todo-api'
+                sh '''
+                    export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin
+                    docker build -t todo-api .
+                    docker stop todo-api-container || true
+                    docker rm todo-api-container || true
+                    docker run -d -p 4000:5000 --name todo-api-container todo-api
+                '''
             }
         }
 
         stage('Release') {
             steps {
                 echo 'Tagging release...'
-                sh 'docker tag todo-api todo-api:v1.0'
+                sh '''
+                    export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin
+                    docker tag todo-api todo-api:v1.0
+                '''
             }
         }
 
         stage('Monitoring') {
             steps {
                 echo 'Checking application health...'
-                sh 'curl -f http://localhost:4000 || echo "Health check failed"'
+                sh '''
+                    export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin
+                    curl -f http://localhost:4000 || echo "Health check failed"
+                '''
             }
         }
     }
